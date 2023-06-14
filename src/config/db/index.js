@@ -1,24 +1,18 @@
 const mysql = require('mysql');
-// const connection = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'root',
-//   password: '',
-//   database: 'qlcv_dev'
-// });
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'qlcv'
+});
 
 async function connectToDatabase() {
-  const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'qlcv_dev'
-  });
   connection.connect((err) => {
     if (err) {
-      console.error('Không thể kết nối với MySQL:', err);
+      console.error("Lỗi kết nối MySQL: " + err.stack);
       return;
     }
-    console.log('Kết nối thành công MySQL!');
+    console.log("Kết nối thành công MySQL với ID: " + connection.threadId);
   });
 }
 module.exports= {connectToDatabase};
