@@ -143,6 +143,7 @@ app.post("/api/congViec/themCongViec", (req, res) => {
     NgayKetThuc,
     TrangThai,
     UuTien,
+    MaDuAn
   };
 
   connection.query(query, project, (err, result) => {
@@ -150,22 +151,9 @@ app.post("/api/congViec/themCongViec", (req, res) => {
       console.error("Lỗi khi thêm công việc:", err);
       return res.status(500).json({ error: "Lỗi khi thêm công việc." });
     }
-    // Thêm dữ liệu vào bảng congviec_duan
-    const queryString = "INSERT INTO congviec_duan (MaCV_DA, MaCongViec, MaDuAn, TrangThai) VALUES ?";
-    const values = MaDuAn.map((maDuAn) => [moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 10000000), maCongViec, maDuAn, 1, ]);
-    console.log(values);
-    connection.query(queryString, [values], (error, results) => {
-      if (error) {
-        console.error("Lỗi khi thêm dữ liệu vào bảng congviec_duan:", error);
-        return res
-          .status(500)
-          .json({ error: "Lỗi khi thêm dữ liệu vào bảng congviec_duan." });
-      }
-
-      return res
+    return res
         .status(201)
         .json({ success: "Công việc mới đã được tạo thành công." });
-    });
   });
 });
 
@@ -174,42 +162,44 @@ app.post("/api/congViec/themCongViec", (req, res) => {
   // PUT /api/congViec/suaCongViec
 // PUT http://localhost:8000/api/congViec/suaCongViec/sdsgdfg
 app.put("/api/congViec/suaCongViec/:id", (req, res) => {
-    const maCongViec = req.params.id;
-    const {
+  const maCongViec = req.params.id;
+  const {
+    TenCongViec,
+    MoTaCongViec,
+    NgayBatDau,
+    NgayKetThuc,
+    TrangThai,
+    UuTien,
+    MaDuAn
+  } = req.body;
+  const query =
+    "UPDATE congviec SET TenCongViec = ?, MoTaCongViec = ?, NgayBatDau = ?, NgayKetThuc = ?, TrangThai = ?, UuTien = ?, MaDuAn= ? WHERE MaCongViec = ?;";
+  connection.query(
+    query,
+    [
       TenCongViec,
       MoTaCongViec,
       NgayBatDau,
       NgayKetThuc,
       TrangThai,
       UuTien,
-    } = req.body;
-    const query =
-      "UPDATE congviec SET TenCongViec = ?, MoTaCongViec = ?, NgayBatDau = ?, NgayKetThuc = ?, TrangThai = ?, UuTien = ? WHERE MaCongViec = ?;";
-    connection.query(
-      query,
-      [
-        TenCongViec,
-        MoTaCongViec,
-        NgayBatDau,
-        NgayKetThuc,
-        TrangThai,
-        UuTien,
-        maCongViec,
-      ],
-      (error, results) => {
-        if (error) {
-          console.error("Error updating job:", error);
-          return res
-            .status(500)
-            .json({ error: "Đã xảy ra lỗi trong quá trình cập nhật công việc." });
-        }
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ error: "Công việc không tồn tại." });
-        }
-        return res.json({ message: "Cập nhật công việc thành công." });
+      MaDuAn,
+      maCongViec,
+    ],
+    (error, results) => {
+      if (error) {
+        console.error("Error updating job:", error);
+        return res
+          .status(500)
+          .json({ error: "Đã xảy ra lỗi trong quá trình cập nhật công việc." });
       }
-    );
-  });
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: "Công việc không tồn tại." });
+      }
+      return res.json({ message: "Cập nhật công việc thành công." });
+    }
+  );
+});
 
 
 
@@ -308,64 +298,63 @@ const upload = multer({
 // POST http://localhost:8000/api/congViec/phanCongCongViec/:id
 app.post("/api/congViec/phanCongCongViec/:id", upload.array("files", 10), (req, res) => {
   const maCongViec = req.params.id;
-  const { MaNguoiDung } = req.body;
-  const taptin = req.files;
-  const queryThemNguoiDung_CV ="INSERT INTO NguoiDung_CongViec (MaND_CV, MaNguoiDung, MaCongViec) VALUES ?";
-  const queryThemTaiLieuCV ="INSERT INTO TaiLieuCV (MaTaiLieuCV, TenTaiLieuCV) VALUES ?";
-  const queryThemCV_TaiLieuCV ="INSERT INTO congviec_tailieucv (MaCV_TL, MaCongViec, MaTaiLieuCV) VALUES ?";
+    const { MaNguoiDung } = req.body;
+    const taptin = req.files;
+    const queryThemNguoiDung_CV ="INSERT INTO NguoiDung_CongViec (MaND_CV, MaNguoiDung, MaCongViec) VALUES ?";
+    const queryThemTaiLieuCV ="INSERT INTO TaiLieuCV (MaTaiLieuCV, TenTaiLieuCV) VALUES ?";
+    const queryThemCV_TaiLieuCV ="INSERT INTO congviec_tailieucv (MaCV_TL, MaCongViec, MaTaiLieuCV, TrangThai) VALUES ?";
 
-  const values = MaNguoiDung.map((maNguoiDung) => [moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 10000000), maNguoiDung, maCongViec, ]);
-  connection.query(
-    queryThemNguoiDung_CV,
-    [values],
-    (err, result) => {
-      if (err) {
-        console.error("Lỗi khi phân công công việc:", err);
-        return res
-          .status(500)
-          .json({ error: "Lỗi khi phân công công việc." });
-      }
-      if (taptin.length === 0) {
-        return res
-          .status(200)
-          .json({ success: "Công việc đã được cập nhật thành công." });
-      }
-
-      const values = taptin.map((file) => {
-        const maTaiLieuCV =moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 10000000);
-        const maCV_TL =moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 15000000);
-        return [maTaiLieuCV, file.originalname, maCV_TL];
-      });
-
-      connection.query(
-        queryThemTaiLieuCV,
-        [values.map((value) => [value[0], value[1]])],
-        (err, result) => {
-          if (err) {
-            console.error("Lỗi khi thêm tài liệu:", err);
-            return res.status(500).json({ error: "Lỗi khi thêm tài liệu." });
-          }
-
-          const valuesCV_TL = values.map((value) => [ value[2], maCongViec, value[0], ]);
-
-          connection.query(
-            queryThemCV_TaiLieuCV, [valuesCV_TL], (err, result) => {
-              if (err) {
-                console.error("Lỗi khi thêm tài liệu cho công việc:", err);
-                return res
-                  .status(500)
-                  .json({ error: "Lỗi khi thêm tài liệu cho công việc." });
-              }
-              return res
-                .status(201)
-                .json({
-                  success: "Tài liệu cho công việc đã được tạo thành công.",
-                });
-            }
-          );
+    const values = MaNguoiDung.map((maNguoiDung) => [moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 10000000), maNguoiDung, maCongViec, ]);
+    connection.query(
+      queryThemNguoiDung_CV,
+      [values],
+      (err, result) => {
+        if (err) {
+          console.error("Lỗi khi phân công công việc:", err);
+          return res
+            .status(500)
+            .json({ error: "Lỗi khi phân công công việc." });
         }
-      );
-    }
-  );
-}
-);
+        if (taptin.length === 0) {
+          return res
+            .status(200)
+            .json({ success: "Công việc đã được cập nhật thành công." });
+        }
+
+        const values = taptin.map((file) => {
+          const maTaiLieuCV =moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 10000000);
+          const maCV_TL =moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 15000000);
+          return [maTaiLieuCV, file.originalname, maCV_TL];
+        });
+
+        connection.query(
+          queryThemTaiLieuCV,
+          [values.map((value) => [value[0], value[1]])],
+          (err, result) => {
+            if (err) {
+              console.error("Lỗi khi thêm tài liệu:", err);
+              return res.status(500).json({ error: "Lỗi khi thêm tài liệu." });
+            }
+
+            const valuesCV_TL = values.map((value) => [ value[2], maCongViec, value[0], 1]);
+
+            connection.query(
+              queryThemCV_TaiLieuCV, [valuesCV_TL], (err, result) => {
+                if (err) {
+                  console.error("Lỗi khi thêm tài liệu cho công việc:", err);
+                  return res
+                    .status(500)
+                    .json({ error: "Lỗi khi thêm tài liệu cho công việc." });
+                }
+                return res
+                  .status(201)
+                  .json({
+                    success: "Tài liệu cho công việc đã được tạo thành công.",
+                  });
+              }
+            );
+          }
+        );
+      }
+    ); 
+});

@@ -112,6 +112,52 @@ class CongViecController{
     };
 
     themCongViec(req, res, next){
+        // const {
+        //     TenCongViec,
+        //     MoTaCongViec,
+        //     NgayBatDau,
+        //     NgayKetThuc,
+        //     TrangThai,
+        //     UuTien,
+        //     MaDuAn,
+        //   } = req.body;
+        
+        //   // Thêm công việc vào cơ sở dữ liệu
+        // const query = "INSERT INTO congviec SET ?";
+        // const maCongViec = moment().format("DDMMYYYYHHmmss") +"" + Math.floor(Math.random() * 10000000);
+        // const project = {
+        //     maCongViec,
+        //     TenCongViec,
+        //     MoTaCongViec,
+        //     NgayBatDau,
+        //     NgayKetThuc,
+        //     TrangThai,
+        //     UuTien,
+        // };
+        
+        // connection.query(query, project, (err, result) => {
+        //     if (err) {
+        //       console.error("Lỗi khi thêm công việc:", err);
+        //       return res.status(500).json({ error: "Lỗi khi thêm công việc." });
+        //     }
+        //     // Thêm dữ liệu vào bảng congviec_duan
+        //     const queryString = "INSERT INTO congviec_duan (MaCV_DA, MaCongViec, MaDuAn, TrangThai) VALUES ?";
+        //     const values = MaDuAn.map((maDuAn) => [moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 10000000), maCongViec, maDuAn, 1, ]);
+        //     console.log(values);
+        //     connection.query(queryString, [values], (error, results) => {
+        //       if (error) {
+        //         console.error("Lỗi khi thêm dữ liệu vào bảng congviec_duan:", error);
+        //         return res
+        //           .status(500)
+        //           .json({ error: "Lỗi khi thêm dữ liệu vào bảng congviec_duan." });
+        //       }
+        
+        //       return res
+        //         .status(201)
+        //         .json({ success: "Công việc mới đã được tạo thành công." });
+        //     });
+        // });
+
         const {
             TenCongViec,
             MoTaCongViec,
@@ -123,9 +169,9 @@ class CongViecController{
           } = req.body;
         
           // Thêm công việc vào cơ sở dữ liệu
-        const query = "INSERT INTO congviec SET ?";
-        const maCongViec = moment().format("DDMMYYYYHHmmss") +"" + Math.floor(Math.random() * 10000000);
-        const project = {
+          const query = "INSERT INTO congviec SET ?";
+          const maCongViec = moment().format("DDMMYYYYHHmmss") +"" + Math.floor(Math.random() * 10000000);
+          const project = {
             maCongViec,
             TenCongViec,
             MoTaCongViec,
@@ -133,30 +179,18 @@ class CongViecController{
             NgayKetThuc,
             TrangThai,
             UuTien,
-        };
+            MaDuAn
+          };
         
-        connection.query(query, project, (err, result) => {
+          connection.query(query, project, (err, result) => {
             if (err) {
               console.error("Lỗi khi thêm công việc:", err);
               return res.status(500).json({ error: "Lỗi khi thêm công việc." });
             }
-            // Thêm dữ liệu vào bảng congviec_duan
-            const queryString = "INSERT INTO congviec_duan (MaCV_DA, MaCongViec, MaDuAn, TrangThai) VALUES ?";
-            const values = MaDuAn.map((maDuAn) => [moment().format("DDMMYYYYHHmmss") +"" +Math.floor(Math.random() * 10000000), maCongViec, maDuAn, 1, ]);
-            console.log(values);
-            connection.query(queryString, [values], (error, results) => {
-              if (error) {
-                console.error("Lỗi khi thêm dữ liệu vào bảng congviec_duan:", error);
-                return res
-                  .status(500)
-                  .json({ error: "Lỗi khi thêm dữ liệu vào bảng congviec_duan." });
-              }
-        
-              return res
+            return res
                 .status(201)
                 .json({ success: "Công việc mới đã được tạo thành công." });
-            });
-        });
+          });
     };
 
     suaCongViec(req, res, next){

@@ -39,7 +39,7 @@ Ví dụ: http://localhost:8000/api/congViec/timCongViec?search=HHHFH -->
 
 
 4. Thêm công việc (bổ sung cho table congviec_duan)
--> Khi thêm công việc chọn những dự án có thể có công việc này
+-> Khi thêm công việc chọn 1 dự án cho công việc này
 Truy vấn: POST http://localhost:8000/api/congViec/themCongViec
 Data: 
 {
@@ -49,7 +49,7 @@ Data:
     "NgayKetThuc": "2023-07-15", 
     "TrangThai": 0, 
     "UuTien": 1,
-    "MaDuAn": ["130620232010211019583", "130620232010211061114", "130620232010211074825"]
+    "MaDuAn": "130620232010211019583"
 }
 
 
@@ -66,7 +66,8 @@ Data:
         "NgayBatDau": "2023-05-15",
         "NgayKetThuc": "2023-07-15",
         "TrangThai": -1,
-        "UuTien": 2
+        "UuTien": 2,
+        "MaDuAn": "130620232010211019583"
 }
 
 

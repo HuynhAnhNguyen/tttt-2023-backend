@@ -3,7 +3,7 @@ const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'qlcv'
+  database: 'qlcv_dev'
 });
 
 async function connectToDatabase() {
